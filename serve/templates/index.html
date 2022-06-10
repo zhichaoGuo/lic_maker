@@ -18,9 +18,9 @@
                 </div>
                 <div class="details">
                     <div class="number"> {{ project_cout }} </div>
-                    <div class="desc"> 项目</div>
+                    <div class="desc"> single模式 </div>
                 </div>
-                <a class="more" href="{{ url_for('index.single') }}"> 查看项目
+                <a class="more" href="{{ url_for('index.single') }}"> 逐一生成licence文件
                     <i class="m-icon-swapright m-icon-white"></i>
                 </a>
             </div>
@@ -33,10 +33,9 @@
                 <div class="details">
                     <div class="number"> {{ model_cout }}
                     </div>
-                    <div class="desc"> 模块
-                    </div>
+                    <div class="desc"> range模式 </div>
                 </div>
-                <a class="more" href="{{ url_for('index.range') }}"> 查看更多
+                <a class="more" href="{{ url_for('index.range') }}"> 批量生成licence文件
                     <i class="m-icon-swapright m-icon-white">
                     </i>
                 </a>

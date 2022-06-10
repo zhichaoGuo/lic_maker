@@ -19,17 +19,24 @@
                     </div>
                 </div>
                 <div class="am-u-md-6 am-u-sm-12">
-                    <form role="form">
+                    <form role="form" method="post">
                         <div class="form-group">
-                            <textarea name="mytextarea" style="height: 202px;"></textarea>
+                                <p>
+                                    起始mac:
+                                    <input id="start_mac" placeholder="如：00:1f:c1:00:00:00">
+                                </p>
+                                <p>
+                                    截止mac:
+                                    <input id="stop_mac" placeholder="如：00:1f:c1:00:00:0f">
+                                </p>
                             <p class="help-block">这里是块级帮助文本的实例。</p>
                             <p class="help-block">这里是块级帮助文本的实例。</p>
-                            <button type="submit" class="btn btn-default">生成并下载</button>
+                            <button type="submit" class="btn btn-default" onclick="apply_range()">生成并下载</button>
                         </div>
                     </form>
                 </div>
                 <div class="am-u-md-6 am-u-sm-12">
-                    <p class="help-block">输入想要生成licence的mac地址，多个输入请换行分割</p>
+                    <p class="help-block">输入想要生成licence的mac地址，包含开始和结束</p>
                     <p class="help-block">例如：</p>
                     <p class="help-block">开始：00:1f:c1:00:00:00</p>
                     <p class="help-block">结束：00:1f:c1:00:00:ff</p>
@@ -45,25 +52,28 @@
 {% endblock %}
 {% block js %}
 <script type='text/javascript'>
-    function apply_single {
-        var mac_text = document.getElementById('single_data').value;
+    function apply_range() {
+        var start_mac = document.getElementById('start_mac').value;
+        var stop_mac = document.getElementById('stop_mac').value;
         var data = {};
-        if (mac_text.length = 0) {
-                alert('请输入至少一个mac地址')
+        data['start_mac']=start_mac
+        data['stop_mac']=stop_mac
+        if (start_mac.length = 0) {
+                alert('请输入起、止mac地址')
             }
             else {
-            data['method'] = "single";
+                data['method'] = "range";
 
                 $.ajax({
-                    url: http://' + window.location.host + '/single',
-                    data: JSON.stringify(data),
+                    url: '{{ url_for("index.range") }}',
+                    data: {'text':'test'},
                     type: 'POST',
-                    Content-Type: 'application/json; charset=UTF-8',
+                    contentType: 'application/json; charset=UTF-8',
                     processData: false,
                     success: function (data) {
                         if (data['code'] == 1) {
                             alert('生成成功');
-                            window.location.href = ('{{ url_for("index.single") }}')
+                            window.location.href = ('{{ url_for("index.range") }}')
                         } else {
                             alert('生成失败')
                         }
@@ -73,7 +83,6 @@
             }
 
         }
-    }
 </script>
 
 {% endblock %}

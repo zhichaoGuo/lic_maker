@@ -1,4 +1,4 @@
-import shutil
+
 import subprocess
 from pathlib import Path
 from config import *
@@ -24,13 +24,11 @@ def exec_lic_maker_singel(mac):
     old_path = os.path.join(temp_dir, old_name)
     new_path = os.path.join(temp_dir, new_name)
     if Path(old_path).exists():
-        p = subprocess.run(['sudo', 'chmod', '777', old_name], timeout=10)
         os.remove(old_path)
     if Path(new_path).exists():
-        p = subprocess.run(['sudo', 'chmod', '777', new_name], timeout=10)
         os.remove(new_path)
     if lic_maker_singel(mac):
-        p = subprocess.run(['sudo', 'chmod', '777', old_name], timeout=10)
+        p = subprocess.run(['sudo','chmod','777',old_name], cwd=temp_dir, timeout=10)
         os.rename(old_path, new_path)
         return True
     else:

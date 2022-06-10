@@ -27,7 +27,7 @@ def load_user(user_id):
 class RootView(MethodView):
     @login_required
     def get(self):
-        return render_template('index.html')
+        return redirect(url_for('index.index'))
 
 
 class LoginView(MethodView):
@@ -57,9 +57,6 @@ class IndexView(MethodView):
     @login_required
     def get(self):
         return render_template('index.html')
-    def post(self):
-        print(request.get_data())
-        return '123'
 
 class LogoutView(MethodView):
     @login_required
@@ -115,4 +112,6 @@ class ExecRangeView(MethodView):
         return render_template('range.html')
     @login_required
     def post(self):
-        pass
+        data_byte = request.get_data()
+        print(data_byte)
+        return render_template('range.html')

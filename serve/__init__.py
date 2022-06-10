@@ -1,10 +1,11 @@
 import logging
+import subprocess
 from logging.handlers import TimedRotatingFileHandler
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
 from flask import Flask
-
+from config import *
 app = Flask(__name__)
 server_log = TimedRotatingFileHandler('server.log','D')
 server_log.setLevel(logging.DEBUG)
@@ -28,3 +29,6 @@ loginManager = LoginManager(app)
 loginManager.session_protection = "strong"
 loginManager.login_view = 'index.login'
 loginManager.login_message = u'lic_maker平台必须登录，请登录您的平台账号！'
+
+# subprocess.run(['sudo','chmod','777','lic_maker'], cwd=root_dir, timeout=10)
+# subprocess.run(['sudo','chmod','777','zpipe'], cwd=root_dir, timeout=10)
