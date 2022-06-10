@@ -96,6 +96,13 @@
                 <th>申请ip</th>
             </tr>
             </thead>
+            {% for res in my_apply %}
+                    <tr>
+                        <td>{{ res.apply_time }}</td>
+                        <td>{{ res.apply_mac }}</td>
+                        <td>{{ res.apply_ip }}</td>
+                    </tr>
+                {% endfor %}
         </table>
     </div>
 {% block fen %}

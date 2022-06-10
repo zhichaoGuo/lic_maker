@@ -49,7 +49,7 @@ class Record(db.Model):  # 申请记录表
     apply_ip = db.Column(db.String(252))
 
 
-class MacList(db.Model):  # 申请记录表
+class MacList(db.Model):  # mac申请记录表
     __tablename__ = 'mac_list'
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     mac = db.Column(db.String(252))
@@ -75,3 +75,7 @@ def record_apply_info(time, mac, user, ip):
     db.session.add(new_record)
     db.session.commit()
     return True
+
+
+def get_my_apply(user):
+    return Record.query.filter_by(apply_user=user)

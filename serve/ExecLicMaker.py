@@ -1,4 +1,3 @@
-
 import subprocess
 from pathlib import Path
 from config import *
@@ -6,7 +5,7 @@ from config import *
 
 def lic_maker_singel(mac: str):
     # mac:  00:1f:c1:00:00:00
-    lic_maker_path = os.path.join(root_dir,'lic_maker')
+    lic_maker_path = os.path.join(root_dir, 'lic_maker')
     cmd = ['sudo', lic_maker_path, 'single', mac]
     try:
         print(os.getcwd())
@@ -28,7 +27,7 @@ def exec_lic_maker_singel(mac):
     if Path(new_path).exists():
         os.remove(new_path)
     if lic_maker_singel(mac):
-        p = subprocess.run(['sudo','chmod','777',old_name], cwd=temp_dir, timeout=10)
+        p = subprocess.run(['sudo', 'chmod', '777', old_name], cwd=temp_dir, timeout=10)
         os.rename(old_path, new_path)
         return True
     else:
@@ -54,5 +53,8 @@ def zip_file(zip_name):
 
 
 def clean_temp_dir():
-    for file in os.listdir(temp_dir):
-        os.remove(os.path.join(temp_dir,file))
+    if Path(temp_dir).exists():
+        for file in os.listdir(temp_dir):
+            os.remove(os.path.join(temp_dir, file))
+    else:
+        Path(temp_dir).mkdir()

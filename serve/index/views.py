@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 
 from config import out_dir
-from serve.DataBase import User, Record, record_apply_mac, record_apply_info
+from serve.DataBase import User, Record, record_apply_mac, record_apply_info, get_my_apply
 from serve.ExecLicMaker import exec_lic_maker_singel, zip_file, clean_temp_dir
 from serve.form import LoginFrom
 from serve import loginManager, db
@@ -56,7 +56,7 @@ class LoginView(MethodView):
 class IndexView(MethodView):
     @login_required
     def get(self):
-        return render_template('index.html')
+        return render_template('index.html',my_apply=get_my_apply(session['username']))
 
 class LogoutView(MethodView):
     @login_required
@@ -87,7 +87,7 @@ class ExecSingleView(MethodView):
         data_list = [i for i in data_list if i != '']
         if (data_list == []) | (data_list is None):
             flash('请输入至少一个mac地址')
-            return render_template('single.html')
+            return render_template('single.html',my_apply=get_my_apply(session['username']))
         else:
             apply_time = datetime.datetime.now()
             for mac in data_list:
@@ -98,20 +98,20 @@ class ExecSingleView(MethodView):
                     record_apply_mac(mac,apply_time)
                 else:
                     flash('mac:%s 生成licence失败'%mac)
-                    return render_template('single.html')
+                    return render_template('single.html',my_apply=get_my_apply(session['username']))
             if zip_file('test'):
                 clean_temp_dir()
                 return send_file(os.path.join(out_dir,'test.zip'))
             else:
                 flash('压缩失败')
-                return render_template('single.html')
+                return render_template('single.html',my_apply=get_my_apply(session['username']))
 
 class ExecRangeView(MethodView):
     @login_required
     def get(self):
-        return render_template('range.html')
+        return render_template('range.html',my_apply=get_my_apply(session['username']))
     @login_required
     def post(self):
         data_byte = request.get_data()
         print(data_byte)
-        return render_template('range.html')
+        return render_template('range.html',my_apply=get_my_apply(session['username']))
