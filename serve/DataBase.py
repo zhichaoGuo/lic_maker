@@ -58,3 +58,20 @@ class MacList(db.Model):  # 申请记录表
     apply_num = db.Column(db.Integer())
 
 
+def record_apply_mac(mac, apply_time):
+    mac_item = MacList.query.filter_by(mac=mac).first()
+    if mac_item:
+        mac_item.last_apply_time = apply_time
+        mac_item.apply_num += 1
+        db.session.commit()
+    else:
+        new_mac = MacList(mac=mac, first_apply_time=apply_time, last_apply_time=apply_time, apply_num=1)
+        db.session.add(new_mac)
+        db.session.commit()
+
+
+def record_apply_info(time, mac, user, ip):
+    new_record = Record(apply_time=time, apply_mac=mac, apply_user=user, apply_ip=ip)
+    db.session.add(new_record)
+    db.session.commit()
+    return True

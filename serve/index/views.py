@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 
 from config import out_dir
-from serve.DataBase import User, Record
+from serve.DataBase import User, Record, append_mac, record_apply_mac, record_apply_info
 from serve.ExecLicMaker import exec_lic_maker_singel, zip_file
 from serve.form import LoginFrom
 from serve import loginManager, db
@@ -77,6 +77,7 @@ class LogoutView(MethodView):
 class ExecSingleView(MethodView):
     @login_required
     def get(self):
+        append_mac('00:1f:c1:00:00:01',datetime.datetime.now())
         return render_template('single.html')
     @login_required
     def post(self):
@@ -91,13 +92,13 @@ class ExecSingleView(MethodView):
             flash('请输入至少一个mac地址')
             return render_template('single.html')
         else:
+            apply_time = datetime.datetime.now()
             for mac in data_list:
                 # 生成并改名
                 if exec_lic_maker_singel(mac):
-                        new_record = Record(apply_mac=mac,apply_ip=request.remote_addr,apply_user=session['username'])
-                        db.session.add(new_record)
-                        db.session.commit()
-
+                    # 执行成功，记录操作和mac
+                    record_apply_info(apply_time,mac,session['username'],request.remote_addr)
+                    record_apply_mac(mac,apply_time)
                 else:
                     flash('mac:%s 生成licence失败'%mac)
                     return render_template('single.html')

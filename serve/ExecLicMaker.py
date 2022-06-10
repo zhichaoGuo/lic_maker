@@ -6,7 +6,8 @@ from config import *
 
 def lic_maker_singel(mac: str):
     # mac:  00:1f:c1:00:00:00
-    cmd = ['sudo', './lic_maker', 'single', mac]
+    lic_maker_path = os.path.join(root_dir,'lic_maker')
+    cmd = ['sudo', lic_maker_path, 'single', mac]
     try:
         print(os.getcwd())
         p = subprocess.run(cmd, cwd=root_dir, timeout=10)
