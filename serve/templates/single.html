@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block hello %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li style="color:red">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+<div class="tpl-content-wrapper" style="margin-top: -7px;">
+    <div class="am-u-sm-12 am-u-md-12">
+        <div class="tpl-portlet-components" style="">
+            <div class="row" style="margin-top:10px;margin: 2px;padding: 0px 40px;">
+                <div class="portlet-title">
+                    <div class="caption font-green bold">
+                        <span class="am-icon-code"></span> 逐一生成licence文件
+                    </div>
+                </div>
+                <div class="am-u-md-6 am-u-sm-12">
+                    <form role="form" method="post">
+                        <div class="form-group">
+                            <textarea name="mytextarea" id='single_data' style="height: 202px;" cols="20"></textarea>
+                            <p class="help-block">这里是块级帮助文本的实例。</p>
+                            <p class="help-block">这里是块级帮助文本的实例。</p>
+                            <button type="submit" class="btn btn-default" onclick="apply_single()">生成并下载</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="am-u-md-6 am-u-sm-12">
+                    <div>
+                        <p class="help-block">输入想要生成licence的mac地址，多个输入请换行分割</p>
+                        <p class="help-block">例如：</p>
+                        <p class="help-block">00:1f:c1:00:00:00</p>
+                        <p class="help-block">00:1f:c1:00:00:01</p>
+                        <p class="help-block">00:1f:c1:00:00:02</p>
+                        <p class="help-block">00:1f:c1:00:00:03</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="am-u-sm-12 am-u-md-6">
+    </div>
+</div>
+
+
+{% endblock %}
+{% block js %}
+<script type='text/javascript'>
+    function apply_single {
+        var mac_text = document.getElementById('single_data').value;
+        var data = {};
+        if (mac_text.length = 0) {
+                alert('请输入至少一个mac地址')
+            }
+            else {
+            data['method'] = "single";
+
+                $.ajax({
+                    url: '{{ url_for("index.single") }}',
+                    data: JSON.stringify(data),
+                    type: 'POST',
+                    Content-Type: 'application/json; charset=UTF-8',
+                    processData: false,
+                    success: function (data) {
+                        if (data['code'] == 1) {
+                            alert('生成成功');
+                            window.location.href = ('{{ url_for("index.single") }}')
+                        } else {
+                            alert('生成失败')
+                        }
+                    },
+
+                })
+            }
+
+        }
+    }
+</script>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block hello %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class=flashes>
+                {% for message in messages %}
+                    <li style="color:red">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+<div class="tpl-content-wrapper" style="margin-top: -7px;">
+    <div class="row">
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
+            <div class="dashboard-stat blue">
+                <div class="visual">
+                    <i class="am-icon-comments-o"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> {{ project_cout }} </div>
+                    <div class="desc"> 项目</div>
+                </div>
+                <a class="more" href="{{ url_for('index.single') }}"> 查看项目
+                    <i class="m-icon-swapright m-icon-white"></i>
+                </a>
+            </div>
+        </div>
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
+            <div class="dashboard-stat red">
+                <div class="visual">
+                    <i class="am-icon-bar-chart-o"></i>
+                </div>
+                <div class="details">
+                    <div class="number"> {{ model_cout }}
+                    </div>
+                    <div class="desc"> 模块
+                    </div>
+                </div>
+                <a class="more" href="{{ url_for('index.range') }}"> 查看更多
+                    <i class="m-icon-swapright m-icon-white">
+                    </i>
+                </a>
+            </div>
+        </div>
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
+        </div>
+        <div class="am-u-lg-3 am-u-md-6 am-u-sm-12">
+        </div>
+       </div>
+</div>
+
+{% endblock %}
+{% block js %}
+<script type='text/javascript'>
+    function apply_single {
+        var mac_text = document.getElementById('single_data').value;
+        var data = {};
+        if (mac_text.length = 0) {
+                alert('请输入至少一个mac地址')
+            }
+            else {
+            data['method'] = "single";
+
+                $.ajax({
+                    url: http://' + window.location.host + '/single',
+                    data: JSON.stringify(data),
+                    type: 'POST',
+                    Content-Type: 'application/json; charset=UTF-8',
+                    processData: false,
+                    success: function (data) {
+                        if (data['code'] == 1) {
+                            alert('生成成功');
+                            window.location.href = ('{{ url_for("index.single") }}')
+                        } else {
+                            alert('生成失败')
+                        }
+                    },
+
+                })
+            }
+
+        }
+    }
+</script>
+
+{% endblock %}

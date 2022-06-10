@@ -1,0 +1,116 @@
+import datetime
+import os
+import time
+import urllib
+from urllib.parse import unquote
+
+from flask import Blueprint, render_template, jsonify, request, session, url_for, flash, send_file
+from flask.views import MethodView
+from flask_login import login_required, login_user, logout_user
+from werkzeug.security import generate_password_hash
+from werkzeug.utils import redirect
+
+from config import out_dir
+from serve.DataBase import User, Record
+from serve.ExecLicMaker import exec_lic_maker_singel, zip_file
+from serve.form import LoginFrom
+from serve import loginManager, db
+
+index = Blueprint('index', __name__)
+
+
+@loginManager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
+
+class RootView(MethodView):
+    @login_required
+    def get(self):
+        return render_template('index.html')
+
+
+class LoginView(MethodView):
+    def get(self):
+        form = LoginFrom()
+        return render_template('login.html', form=form)
+
+    def post(self):
+        data = request.get_json()
+        ip = request.remote_addr
+        username = data['username']
+        password = data['password']
+        user = User.query.filter_by(username=username).first()
+        db.session.add_all([user])
+        db.session.commit()
+        # 记录登录信息
+        login_user(user)
+        session['username'] = username
+        return jsonify({
+            'code': 0,
+            'message': 'message',
+            'data': '',
+        })
+
+
+class IndexView(MethodView):
+    @login_required
+    def get(self):
+        return render_template('index.html')
+    def post(self):
+        print(request.get_data())
+        return '123'
+
+class LogoutView(MethodView):
+    @login_required
+    def get(self):
+        username = session.get("username")
+        session.clear()
+        logout_user()
+        user = User.query.filter_by(username=username).first()
+        user.is_login = False
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('index.login', next=request.url))
+
+
+class ExecSingleView(MethodView):
+    @login_required
+    def get(self):
+        return render_template('single.html')
+    @login_required
+    def post(self):
+        print(request.remote_addr)
+        # 接收数据处理：由byte转str去除b''，去除空格，去除文本域name，以换行符分割mac存为列表
+        data_byte = request.get_data()
+        # print(data_byte)
+        data_list = urllib.parse.unquote(str(data_byte)[2:-1].replace("+", "")).split("=")[1].split("\r\n")
+        # 去除列表空值（多余换行）
+        data_list = [i for i in data_list if i != '']
+        if (data_list == []) | (data_list is None):
+            flash('请输入至少一个mac地址')
+            return render_template('single.html')
+        else:
+            for mac in data_list:
+                # 生成并改名
+                if exec_lic_maker_singel(mac):
+                        new_record = Record(apply_mac=mac,apply_ip=request.remote_addr,apply_user=session['username'])
+                        db.session.add(new_record)
+                        db.session.commit()
+
+                else:
+                    flash('mac:%s 生成licence失败'%mac)
+                    return render_template('single.html')
+            if zip_file('test'):
+                return send_file(os.path.join(out_dir,'test.zip'))
+            else:
+                flash('压缩失败')
+                return render_template('single.html')
+
+class ExecRangeView(MethodView):
+    @login_required
+    def get(self):
+        return render_template('range.html')
+    @login_required
+    def post(self):
+        pass

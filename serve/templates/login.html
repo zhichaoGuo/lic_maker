@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>lic_maker平台</title>
+    <link href="{{ url_for('static',filename='css/bootstrap.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/demo.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static',filename='css/main.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/jquery.min.js') }}"></script>
+    <style type="text/css">
+        body {
+            background: url({{url_for('static',filename='img/bg-login.jpg')}}) !important;
+        }
+    </style>
+</head>
+<body style="    background-color: beige;">
+<div id="wrapper">
+    <div class="vertical-align-wrap">
+        <div class="vertical-align-middle">
+            <div class="header " style="">
+                <h1 style="text-align: center;">平台登录</h1>
+            </div>
+            <div style="text-align: center;color: red" id="duanyan">
+            </div>
+            <div style="text-align: center;color: red">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        <ul class=flashes>
+                            {% for message in messages %}
+                                <li><strong>{{ message }}</strong></li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            <div style="">
+                <form class="form-auth-small" method="POST" style="width: 40%;margin-left: 30%;">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {% if form.username.errors %}
+                            {% for e in form.username.errors %}
+                                <p class="flashes">{{ e }}</p>
+                            {% endfor %}
+                        {% endif %}
+                        {{ form.username(class='form-control',id='username') }}
+                        <div class="form-group">
+                            {{ form.password(class='form-control',id='password') }}
+                        </div>
+                        <button type="button" class="btn btn-primary btn-lg btn-block" onclick="login()">登录</button>
+                    </div>
+                </form>
+            </div>
+            <h3 style="text-align: center;color: red">licence maker页面测试 </h3>
+            <h3 style="text-align: center;color: red">请勿点击或登录</h3>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function login() {
+        var username = document.getElementById('username').value;
+        var password = document.getElementById('password').value;
+        var message = document.getElementById('duanyan');
+        if (username.length < 1) {
+            message.innerHTML = "用户名不能为空！";
+        } else {
+            if (password.length < 1) {
+                message.innerHTML = "密码不能为空！";
+            } else {
+                var data = {};
+                data['username'] = username;
+                data['password'] = password;
+                $.ajax({
+                    url: '{{ url_for('index.login') }}',
+                    type: 'POST',
+                    data: JSON.stringify(data),
+                    contentType: 'application/json; charset=UTF-8',
+                    processData: false,
+                    success: function (result) {
+                        if (result['code'] == 0) {
+                            location.href = '{{ url_for('index.index') }}';
+                        } else {
+                            message.innerHTML = (result['msg']);
+                        }
+                    }
+                });
+            }
+        }
+    }
+</script>
+</body>
+</html>
