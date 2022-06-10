@@ -11,8 +11,8 @@ from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 
 from config import out_dir
-from serve.DataBase import User, Record, append_mac, record_apply_mac, record_apply_info
-from serve.ExecLicMaker import exec_lic_maker_singel, zip_file
+from serve.DataBase import User, Record, record_apply_mac, record_apply_info
+from serve.ExecLicMaker import exec_lic_maker_singel, zip_file, clean_temp_dir
 from serve.form import LoginFrom
 from serve import loginManager, db
 
@@ -77,7 +77,7 @@ class LogoutView(MethodView):
 class ExecSingleView(MethodView):
     @login_required
     def get(self):
-        append_mac('00:1f:c1:00:00:01',datetime.datetime.now())
+        clean_temp_dir()
         return render_template('single.html')
     @login_required
     def post(self):
@@ -103,6 +103,7 @@ class ExecSingleView(MethodView):
                     flash('mac:%s 生成licence失败'%mac)
                     return render_template('single.html')
             if zip_file('test'):
+                clean_temp_dir()
                 return send_file(os.path.join(out_dir,'test.zip'))
             else:
                 flash('压缩失败')
