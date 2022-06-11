@@ -10,42 +10,44 @@
         {% endif %}
     {% endwith %}
 <div class="tpl-content-wrapper" style="margin-top: -7px;">
-    <div class="am-u-sm-12 am-u-md-12">
-        <div class="tpl-portlet-components" style="">
-            <div class="row" style="margin-top:10px;margin: 2px;padding: 0px 40px;">
-                <div class="portlet-title">
-                    <div class="caption font-green bold">
-                        <span class="am-icon-code"></span> 批量生成licence文件
-                    </div>
-                </div>
-                <div class="am-u-md-6 am-u-sm-12">
-                    <form role="form" method="post">
-                        <div class="form-group">
-                                <p>
-                                    起始mac:
-                                    <input id="start_mac" placeholder="如：00:1f:c1:00:00:00">
-                                </p>
-                                <p>
-                                    截止mac:
-                                    <input id="stop_mac" placeholder="如：00:1f:c1:00:00:0f">
-                                </p>
-                            <p class="help-block">这里是块级帮助文本的实例。</p>
-                            <p class="help-block">这里是块级帮助文本的实例。</p>
-                            <button type="submit" class="btn btn-default" onclick="apply_range()">生成并下载</button>
+    <div class="row">
+        <div class="am-u-sm-12 am-u-md-12">
+            <div class="tpl-portlet-components" style="">
+                <div class="row" style="margin-top:10px;margin: 2px;padding: 0px 40px;">
+                    <div class="portlet-title">
+                        <div class="caption font-green bold">
+                            <span class="am-icon-code"></span> 批量生成licence文件
                         </div>
-                    </form>
-                </div>
-                <div class="am-u-md-6 am-u-sm-12">
-                    <p class="help-block">输入想要生成licence的mac地址，包含开始和结束</p>
-                    <p class="help-block">例如：</p>
-                    <p class="help-block">开始：00:1f:c1:00:00:00</p>
-                    <p class="help-block">结束：00:1f:c1:00:00:ff</p>
-                    <p class="help-block">即生成包含两端mac的licence文件</p>
+                    </div>
+                    <div class="am-u-md-6 am-u-sm-12">
+                        <form role="form" method="post">
+                            <div class="form-group">
+                                    <p>
+                                        起始mac:
+                                        <input id="start_mac" placeholder="如：00:1f:c1:00:00:00">
+                                    </p>
+                                    <p>
+                                        截止mac:
+                                        <input id="stop_mac" placeholder="如：00:1f:c1:00:00:0f">
+                                    </p>
+                                <p class="help-block">这里是块级帮助文本的实例。</p>
+                                <p class="help-block">这里是块级帮助文本的实例。</p>
+                                <input type="button" value="生成并下载" class="btn btn-default" onclick="apply_range()">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="am-u-md-6 am-u-sm-12">
+                        <p class="help-block">输入想要生成licence的mac地址，包含开始和结束</p>
+                        <p class="help-block">例如：</p>
+                        <p class="help-block">开始：00:1f:c1:00:00:00</p>
+                        <p class="help-block">结束：00:1f:c1:00:00:ff</p>
+                        <p class="help-block">即生成包含两端mac的licence文件</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="am-u-sm-12 am-u-md-6">
+        <div class="am-u-sm-12 am-u-md-6">
+        </div>
     </div>
 </div>
 
@@ -66,14 +68,14 @@
 
                 $.ajax({
                     url: '{{ url_for("index.range") }}',
-                    data: {'text':'test'},
+                    data: JSON.stringify(data),
                     type: 'POST',
                     contentType: 'application/json; charset=UTF-8',
                     processData: false,
                     success: function (data) {
-                        if (data['code'] == 1) {
+                        if (data['code'] == 0) {
                             alert('生成成功');
-                            window.location.href = ('{{ url_for("index.range") }}')
+
                         } else {
                             alert('生成失败')
                         }

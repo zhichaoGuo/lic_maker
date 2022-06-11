@@ -1,0 +1,90 @@
+2022-06-11 14:12:30,935: Exception on /single [POST] [in E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1526, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1545, in finalize_request
+    response = self.make_response(rv)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1702, in make_response
+    f"The view function for {request.endpoint!r} did not"
+TypeError: The view function for 'index.single' did not return a valid response. The function either returned None or ended without a return statement.
+2022-06-11 14:13:15,447: Exception on /single [POST] [in E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1526, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1545, in finalize_request
+    response = self.make_response(rv)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1702, in make_response
+    f"The view function for {request.endpoint!r} did not"
+TypeError: The view function for 'index.single' did not return a valid response. The function either returned None or ended without a return statement.
+2022-06-11 14:13:18,752: Exception on /single [POST] [in E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1526, in full_dispatch_request
+    return self.finalize_request(rv)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1545, in finalize_request
+    response = self.make_response(rv)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1702, in make_response
+    f"The view function for {request.endpoint!r} did not"
+TypeError: The view function for 'index.single' did not return a valid response. The function either returned None or ended without a return statement.
+2022-06-11 14:29:46,828: Exception on /single [POST] [in E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1525, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1523, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1509, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\views.py", line 84, in view
+    return current_app.ensure_sync(self.dispatch_request)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\views.py", line 158, in dispatch_request
+    return current_app.ensure_sync(meth)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask_login\utils.py", line 303, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\serve\index\views.py", line 84, in post
+    data = request.get_json().replace(' ','').split('\n')
+AttributeError: 'dict' object has no attribute 'replace'
+2022-06-11 14:29:49,406: Exception on /single [POST] [in E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1525, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1523, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1509, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\views.py", line 84, in view
+    return current_app.ensure_sync(self.dispatch_request)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\views.py", line 158, in dispatch_request
+    return current_app.ensure_sync(meth)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask_login\utils.py", line 303, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\serve\index\views.py", line 84, in post
+    data = request.get_json().replace(' ','').split('\n')
+AttributeError: 'dict' object has no attribute 'replace'
+2022-06-11 14:30:23,691: Exception on /single [POST] [in E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1525, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1523, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\app.py", line 1509, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\views.py", line 84, in view
+    return current_app.ensure_sync(self.dispatch_request)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask\views.py", line 158, in dispatch_request
+    return current_app.ensure_sync(meth)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\venv\lib\site-packages\flask_login\utils.py", line 303, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+  File "E:\pythonProject\flask_learn\serve\index\views.py", line 84, in post
+    data = request.get_json()['mac_text'].replace(' ','').split('\n')
+KeyError: 'mac_text'

@@ -1,4 +1,5 @@
 import datetime
+import json
 import os
 import time
 import urllib
@@ -80,11 +81,11 @@ class ExecSingleView(MethodView):
     def post(self):
         print(request.remote_addr)
         # 接收数据处理：由byte转str去除b''，去除空格，去除文本域name，以换行符分割mac存为列表
-        data_byte = request.get_data()
-        # print(data_byte)
-        data_list = urllib.parse.unquote(str(data_byte)[2:-1].replace("+", "")).split("=")[1].split("\r\n")
+        data = request.get_json()['mac_str'].replace(' ','').split('\n')
+        data_list = [x for x in data if x != '']
+        # data_list = urllib.parse.unquote(str(data_byte)[2:-1].replace("+", "")).split("=")[1].split("\r\n")
         # 去除列表空值（多余换行）
-        data_list = [i for i in data_list if i != '']
+        # data_list = [i for i in data_list if i != '']
         if (data_list == []) | (data_list is None):
             flash('请输入至少一个mac地址')
             return render_template('single.html',my_apply=get_my_apply(session['username']))
@@ -105,6 +106,12 @@ class ExecSingleView(MethodView):
             else:
                 flash('压缩失败')
                 return render_template('single.html',my_apply=get_my_apply(session['username']))
+        # return jsonify({
+        #     'code': 0,
+        #     'message': '生成成功',
+        #     'data': '',
+        # }
+        # )
 
 class ExecRangeView(MethodView):
     @login_required
@@ -112,6 +119,11 @@ class ExecRangeView(MethodView):
         return render_template('range.html',my_apply=get_my_apply(session['username']))
     @login_required
     def post(self):
-        data_byte = request.get_data()
-        print(data_byte)
-        return render_template('range.html',my_apply=get_my_apply(session['username']))
+        data = request.get_json() # data={"start_mac":"00:1f:c1:00:00:00","stop_mac":"00:1f:c1:00:00:01","method":"range"}
+        # 生成licence
+        return jsonify({
+            'code': 0,
+            'message': '生成成功',
+            'data': '',
+        }
+    )
