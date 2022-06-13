@@ -80,7 +80,7 @@
                         if (result['code'] == 0) {
                             location.href = '{{ url_for('index.index') }}';
                         } else {
-                            message.innerHTML = (result['msg']);
+                            message.innerHTML = (result['message']);
                         }
                     }
                 });

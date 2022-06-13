@@ -1,7 +1,7 @@
 import datetime
 
-from sqlalchemy import desc
-from werkzeug.security import generate_password_hash
+from sqlalchemy import desc, event
+from werkzeug.security import generate_password_hash, check_password_hash
 
 from serve import db
 
@@ -15,8 +15,6 @@ class User(db.Model):  # 用户表
     last_login_time = db.Column(db.DateTime(), default=datetime.datetime.now())
     status = db.Column(db.Boolean(), default=False)
     is_login = db.Column(db.Boolean(), default=False)
-    is_free = db.Column(db.Boolean(), default=False)
-    freetime = db.Column(db.DateTime(), default=datetime.datetime.now())
 
     def __repr__(self):
         return self.username
@@ -25,8 +23,8 @@ class User(db.Model):  # 用户表
         self.password = generate_password_hash(password)
 
     def check_password(self, password):
-        return True
-        # return check_password_hash(self.password, password)
+        # return True
+        return check_password_hash(self.password, password)
 
     def is_authenticated(self):
         return True
@@ -40,6 +38,12 @@ class User(db.Model):  # 用户表
     def get_id(self):
         return self.id
 
+@event.listens_for(User.__table__, 'after_create')
+def create_admin(*args, **kwargs):
+    admin = User(username='admin')
+    admin.set_password('admin')
+    db.session.add(admin)
+    db.session.commit()
 
 class Record(db.Model):  # 申请记录表
     __tablename__ = 'record'
@@ -53,7 +57,7 @@ class Record(db.Model):  # 申请记录表
 class MacList(db.Model):  # mac申请记录表
     __tablename__ = 'mac_list'
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
-    mac = db.Column(db.String(252))
+    mac = db.Column(db.String(252), unique=True)
     first_apply_time = db.Column(db.DateTime(), default=datetime.datetime.now())
     last_apply_time = db.Column(db.DateTime(), default=datetime.datetime.now())
     apply_num = db.Column(db.Integer())

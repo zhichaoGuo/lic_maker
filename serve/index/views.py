@@ -34,20 +34,41 @@ class LoginView(MethodView):
 
     def post(self):
         data = request.get_json()
-        ip = request.remote_addr
         username = data['username']
         password = data['password']
+        # 前端已加防范，后端再防一手
+        if username is None:
+            return jsonify({
+                'code': 1,
+                'message': '请输入用户名',
+                'data': '',})
+        if password is None:
+            return jsonify({
+                'code': 1,
+                'message': '请输入密码',
+                'data': '',})
         user = User.query.filter_by(username=username).first()
-        db.session.add_all([user])
-        db.session.commit()
-        # 记录登录信息
-        login_user(user)
-        session['username'] = username
+        # 查询到用户
+        if user:
+            if user.check_password(password):
+                user.is_login=True
+                user.last_login_ip=request.remote_addr
+                user.last_login_time=datetime.datetime.now()
+                db.session.add_all([user])
+                db.session.commit()
+                # 记录登录信息
+                login_user(user)
+                session['username'] = username
+                return jsonify({
+                    'code': 0,
+                    'message': 'message',
+                    'data': '',
+                })
         return jsonify({
-            'code': 0,
-            'message': 'message',
-            'data': '',
-        })
+                    'code': 1,
+                    'message': '用户名或密码错误',
+                    'data': '',
+                })
 
 
 class IndexView(MethodView):

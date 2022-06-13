@@ -5,8 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 from flask import Flask
 from config import *
+
 app = Flask(__name__)
-server_log = TimedRotatingFileHandler('server.log','D')
+server_log = TimedRotatingFileHandler('server.log', 'D')
 server_log.setLevel(logging.DEBUG)
 server_log.setFormatter(logging.Formatter('%(asctime)s %(levelname)s: %(message)s'))
 
@@ -22,6 +23,8 @@ app.secret_key = 'Htek20180905'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/data.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 db = SQLAlchemy(app)
+
+from .DataBase import *
 
 db.create_all()
 loginManager = LoginManager(app)
