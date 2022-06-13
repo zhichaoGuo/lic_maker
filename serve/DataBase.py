@@ -71,9 +71,15 @@ def record_apply_mac(mac, apply_time):
 
 
 def record_apply_info(time, mac, user, ip):
-    new_record = Record(apply_time=time, apply_mac=mac, apply_user=user, apply_ip=ip)
-    db.session.add(new_record)
-    db.session.commit()
+    if type(mac) is str:
+        new_record = Record(apply_time=time, apply_mac=mac, apply_user=user, apply_ip=ip)
+        db.session.add(new_record)
+        db.session.commit()
+    elif type(mac) is list:
+        for mac_one in mac:
+            new_record = Record(apply_time=time, apply_mac=mac, apply_user=user, apply_ip=ip)
+            db.session.add(new_record)
+        db.session.commit()
     return True
 
 

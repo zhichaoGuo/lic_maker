@@ -24,15 +24,15 @@
                             <div class="form-group">
                                     <p>
                                         起始mac:
-                                        <input id="start_mac" placeholder="如：00:1f:c1:00:00:00">
+                                        <input name="start_mac" id="start_mac" placeholder="如：00:1f:c1:00:00:00">
                                     </p>
                                     <p>
                                         截止mac:
-                                        <input id="stop_mac" placeholder="如：00:1f:c1:00:00:0f">
+                                        <input name="stop_mac" id="stop_mac" placeholder="如：00:1f:c1:00:00:0f">
                                     </p>
                                 <p class="help-block">这里是块级帮助文本的实例。</p>
                                 <p class="help-block">这里是块级帮助文本的实例。</p>
-                                <input type="button" value="生成并下载" class="btn btn-default" onclick="apply_range()">
+                                <input type="submit" value="生成并下载" class="btn btn-default">
                             </div>
                         </form>
                     </div>
@@ -54,37 +54,7 @@
 {% endblock %}
 {% block js %}
 <script type='text/javascript'>
-    function apply_range() {
-        var start_mac = document.getElementById('start_mac').value;
-        var stop_mac = document.getElementById('stop_mac').value;
-        var data = {};
-        data['start_mac']=start_mac
-        data['stop_mac']=stop_mac
-        if (start_mac.length = 0) {
-                alert('请输入起、止mac地址')
-            }
-            else {
-                data['method'] = "range";
 
-                $.ajax({
-                    url: '{{ url_for("index.range") }}',
-                    data: JSON.stringify(data),
-                    type: 'POST',
-                    contentType: 'application/json; charset=UTF-8',
-                    processData: false,
-                    success: function (data) {
-                        if (data['code'] == 0) {
-                            alert('生成成功');
-
-                        } else {
-                            alert('生成失败')
-                        }
-                    },
-
-                })
-            }
-
-        }
 </script>
 
 {% endblock %}
