@@ -61,7 +61,7 @@ class LoginView(MethodView):
                 session['username'] = username
                 return jsonify({
                     'code': 0,
-                    'message': 'message',
+                    'message': '登录成功！',
                     'data': '',
                 })
         return jsonify({
@@ -125,7 +125,7 @@ class ExecSingleView(MethodView):
 
     @login_required
     def post(self):
-        print(request.remote_addr)
+        # print(request.remote_addr)
         # 接收数据处理：由byte转str去除b''，去除空格，去除文本域name，以换行符分割mac存为列表
         data = request.form['mac_list'].replace(' ', '').replace('\r', '').split('\n')
         data_list = [x for x in data if x != '']
@@ -155,7 +155,6 @@ class ExecSingleView(MethodView):
 class ExecRangeView(MethodView):
     @login_required
     def get(self):
-        app.logger.error('403 error happened')
         return render_template('range.html', my_apply=get_my_apply(session['username']))
 
     @login_required
