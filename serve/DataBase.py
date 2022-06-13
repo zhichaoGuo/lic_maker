@@ -1,5 +1,6 @@
 import datetime
 
+from sqlalchemy import desc
 from werkzeug.security import generate_password_hash
 
 from serve import db
@@ -59,15 +60,27 @@ class MacList(db.Model):  # mac申请记录表
 
 
 def record_apply_mac(mac, apply_time):
-    mac_item = MacList.query.filter_by(mac=mac).first()
-    if mac_item:
-        mac_item.last_apply_time = apply_time
-        mac_item.apply_num += 1
-        db.session.commit()
-    else:
-        new_mac = MacList(mac=mac, first_apply_time=apply_time, last_apply_time=apply_time, apply_num=1)
-        db.session.add(new_mac)
-        db.session.commit()
+    if type(mac) == str:
+        mac_item = MacList.query.filter_by(mac=mac).first()
+        if mac_item:
+            mac_item.last_apply_time = apply_time
+            mac_item.apply_num += 1
+            db.session.commit()
+        else:
+            new_mac = MacList(mac=mac, first_apply_time=apply_time, last_apply_time=apply_time, apply_num=1)
+            db.session.add(new_mac)
+            db.session.commit()
+    elif type(mac) == list:
+        for mac_one in mac:
+            mac_item = MacList.query.filter_by(mac=mac_one).first()
+            if mac_item:
+                mac_item.last_apply_time = apply_time
+                mac_item.apply_num += 1
+                db.session.commit()
+            else:
+                new_mac = MacList(mac=mac_one, first_apply_time=apply_time, last_apply_time=apply_time, apply_num=1)
+                db.session.add(new_mac)
+                db.session.commit()
 
 
 def record_apply_info(time, mac, user, ip):
@@ -77,11 +90,11 @@ def record_apply_info(time, mac, user, ip):
         db.session.commit()
     elif type(mac) is list:
         for mac_one in mac:
-            new_record = Record(apply_time=time, apply_mac=mac, apply_user=user, apply_ip=ip)
+            new_record = Record(apply_time=time, apply_mac=mac_one, apply_user=user, apply_ip=ip)
             db.session.add(new_record)
         db.session.commit()
     return True
 
 
 def get_my_apply(user):
-    return Record.query.filter_by(apply_user=user)
+    return Record.query.filter_by(apply_user=user).order_by(desc(Record.apply_time))

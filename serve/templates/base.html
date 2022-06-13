@@ -71,40 +71,29 @@
             </ul>
         </div>
     </div>
-    <div style="display:none;position:fixed;z-index: 210;width: 800px;top: 100px;left: 20%;box-shadow: 0 0 10px rgba(0,0,0,0.6);border: solid 1px #255c71;border-radius: 5px 5px 0 0;background-color: #9eacb4"
-         id="changepassword">
-        <div style="height: 5px;">修改密码</div>
-        <div style="background-color: whitesmoke;margin-top: 24px">
-            新设密码：<input type="password" id="newpassword">
-            <p></p>确认密码：<input type="password" id="new_password">
-        </div>
-        <div style="margin-top: 50%;margin-bottom: auto">
-            <input value="保存" type="submit" class="btn-default" onclick="change()">
-            <input value="取消" type="button" class=" btn-default" onclick="quxiao()">
-        </div>
-    </div>
+
     {% block hello %}
     {% endblock %}
 </div>
 <div>
-        <strong>我的申请记录</strong>
-        <table class="am-table am-table-striped am-table-hover table-main ">
-            <thead>
+    <strong>我的申请记录</strong>
+    <table class="am-table am-table-striped am-table-hover table-main ">
+        <thead>
+        <tr>
+            <th>申请时间</th>
+            <th>申请mac</th>
+            <th>申请ip</th>
+        </tr>
+        </thead>
+        {% for res in my_apply %}
             <tr>
-                <th>申请时间</th>
-                <th>申请mac</th>
-                <th>申请ip</th>
+                <td>{{ res.apply_time }}</td>
+                <td>{{ res.apply_mac }}</td>
+                <td>{{ res.apply_ip }}</td>
             </tr>
-            </thead>
-            {% for res in my_apply %}
-                    <tr>
-                        <td>{{ res.apply_time }}</td>
-                        <td>{{ res.apply_mac }}</td>
-                        <td>{{ res.apply_ip }}</td>
-                    </tr>
-                {% endfor %}
-        </table>
-    </div>
+        {% endfor %}
+    </table>
+</div>
 {% block fen %}
 {% endblock %}
 <div style='text-align: center;margin-bottom: auto;

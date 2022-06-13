@@ -51,32 +51,7 @@
 {% endblock %}
 {% block js %}
 <script type='text/javascript'>
-    function apply_single() {
-        var mac_text = document.getElementById('single_data').value;
-        var data = {};
-        if (mac_text.length = 0) {
-                alert('请输入至少一个mac地址')
-        } else {
-            data['mac_str'] = mac_text;
-            data['method'] = "single";
 
-            $.ajax({
-                url: '{{ url_for("index.single") }}',
-                data: JSON.stringify(data),
-                type: 'POST',
-                contentType: 'application/json; charset=UTF-8',
-                processData: false,
-                success: function (data) {
-                    if (data['code'] == 1) {
-                        alert('生成成功');
-                        window.location.href = ('{{ url_for("index.single") }}')
-                    } else {
-                        alert('生成失败')
-                    }
-                },
-            })
-        }
-    }
 </script>
 
 {% endblock %}

@@ -1,5 +1,4 @@
 import logging
-import subprocess
 from logging.handlers import TimedRotatingFileHandler
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
@@ -17,7 +16,7 @@ error_log.setFormatter(logging.Formatter('%(asctime)s: %(message)s [in %(pathnam
 
 app.logger.addHandler(server_log)
 app.logger.addHandler(error_log)
-
+app.logger.info('123123123')
 app.secret_key = 'Htek20180905'
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../database/data.sqlite'

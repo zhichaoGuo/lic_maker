@@ -12,6 +12,7 @@ def lic_maker_singel(mac: str):
     try:
         print(os.getcwd())
         p = subprocess.run(cmd, cwd=root_dir, timeout=10)
+        # print(p.returncode)
         if p.returncode == 0:
             return True
         return False
@@ -22,14 +23,13 @@ def lic_maker_singel(mac: str):
 
 def lic_maker_range(start_mac: str, stop_mac: str):
     # mac:  00:1f:c1:00:00:00
-    start_mac = start_mac + ':00'
-    stop_mac = stop_mac + ':ff'
     lic_maker_path = os.path.join(root_dir, 'lic_maker')
     cmd = ['sudo', lic_maker_path, 'range', start_mac, stop_mac]
     try:
         print(os.getcwd())
         p = subprocess.run(cmd, cwd=root_dir, timeout=10)
-        if p.returncode == 0:
+        # print(p.returncode)
+        if p.returncode != -1:
             return True
         return False
     except Exception as err:

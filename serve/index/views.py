@@ -1,23 +1,17 @@
 import datetime
-import json
-import logging
 import os
-import time
-import urllib
-from urllib.parse import unquote, quote
 
-from flask import Blueprint, render_template, jsonify, request, session, url_for, flash, send_file, make_response
+from flask import Blueprint, render_template, jsonify, request, session, url_for, flash, send_file
 from flask.views import MethodView
 from flask_login import login_required, login_user, logout_user
-from werkzeug.security import generate_password_hash
 from werkzeug.utils import redirect
 
 from config import out_dir
-from serve.DataBase import User, Record, record_apply_mac, record_apply_info, get_my_apply
+from serve.DataBase import User, record_apply_mac, record_apply_info, get_my_apply
 from serve.ExecLicMaker import exec_lic_maker_singel, zip_file, clean_temp_dir, exec_lic_maker_range
-from serve.MacTool import is_mac, gen_mac_list
+from serve.MacTool import is_mac, gen_mac_list, mac_17_2_12
 from serve.form import LoginFrom
-from serve import loginManager, db
+from serve import loginManager, db, app
 
 index = Blueprint('index', __name__)
 
@@ -95,14 +89,15 @@ class ExecSingleView(MethodView):
             for mac in data_list:
                 # 生成并改名
                 if exec_lic_maker_singel(mac):
-                    # 执行成功，记录操作和mac
-                    record_apply_info(apply_time, mac, session['username'], request.remote_addr)
-                    record_apply_mac(mac, apply_time)
+                    pass
                 else:
                     flash('mac:%s 生成licence失败' % mac)
+                    clean_temp_dir()
                     return render_template('single.html', my_apply=get_my_apply(session['username']))
             if zip_file('test'):
                 clean_temp_dir()
+                record_apply_info(apply_time, data_list, session['username'], request.remote_addr)
+                record_apply_mac(data_list, apply_time)
                 return send_file(os.path.join(out_dir, 'test.zip'))
             else:
                 flash('压缩失败')
@@ -112,6 +107,7 @@ class ExecSingleView(MethodView):
 class ExecRangeView(MethodView):
     @login_required
     def get(self):
+        app.logger.error('403 error happened')
         return render_template('range.html', my_apply=get_my_apply(session['username']))
 
     @login_required
@@ -120,26 +116,28 @@ class ExecRangeView(MethodView):
         stop_mac = request.form['stop_mac']
         print(start_mac)
         print(stop_mac)
-        if (start_mac=='')|(stop_mac==''):
+        if (start_mac == '') | (stop_mac == ''):
             flash('请输入开始和截止的mac地址')
             return render_template('range.html', my_apply=get_my_apply(session['username']))
-        if is_mac(start_mac)&is_mac(stop_mac) is False:
+        if is_mac(start_mac) & is_mac(stop_mac) is False:
             flash('请输入正确的开始和截止的mac地址')
             return render_template('range.html', my_apply=get_my_apply(session['username']))
         # 生成并改名
         apply_time = datetime.datetime.now()
-        if int(stop_mac, 16) < int(start_mac, 16):
+        if int(mac_17_2_12(stop_mac), 16) < int(mac_17_2_12(start_mac), 16):
             start_mac, stop_mac = stop_mac, start_mac
-        if exec_lic_maker_range(start_mac,stop_mac):
-            mac = gen_mac_list(start_mac,stop_mac)
-            record_apply_info(apply_time, mac, session['username'], request.remote_addr)
-            record_apply_mac(mac, apply_time)
+        if exec_lic_maker_range(start_mac, stop_mac):
+            pass
+        else:
+            clean_temp_dir()
+            flash('生成失败')
+            return render_template('range.html', my_apply=get_my_apply(session['username']))
         if zip_file('test'):
             clean_temp_dir()
+            mac_list = gen_mac_list(start_mac, stop_mac)
+            record_apply_info(apply_time, mac_list, session['username'], request.remote_addr)
+            record_apply_mac(mac_list, apply_time)
             return send_file(os.path.join(out_dir, 'test.zip'))
-        return jsonify({
-            'code': 0,
-            'message': '生成成功',
-            'data': '',
-        }
-        )
+        else:
+            flash('压缩失败')
+            return render_template('range.html', my_apply=get_my_apply(session['username']))
