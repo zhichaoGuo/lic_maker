@@ -10,7 +10,7 @@ from config import out_dir
 from serve.DataBase import User, record_apply_mac, record_apply_info, get_my_apply
 from serve.ExecLicMaker import exec_lic_maker_singel, zip_file, clean_temp_dir, exec_lic_maker_range
 from serve.MacTool import is_mac, gen_mac_list, mac_17_2_12
-from serve.form import LoginFrom
+from serve.form import LoginFrom, RegFrom
 from serve import loginManager, db, app
 
 index = Blueprint('index', __name__)
@@ -89,6 +89,33 @@ class LogoutView(MethodView):
         db.session.commit()
         return redirect(url_for('index.login', next=request.url))
 
+
+class RegisterView(MethodView):
+    def get(self):
+        form = RegFrom()
+        return render_template('register.html',form=form)
+    def post(self):
+        form = RegFrom()
+        usernmae = request.form['username']
+        pasword = request.form['password']
+        setpasswod = request.form['se_password']
+        key = request.form['key']
+        if key != "admin":
+            flash('请填写正确的邀请码，或向开发人员索取邀请码')
+            return render_template('register.html', form=form)
+        if pasword != setpasswod:
+            flash('两次输入的密码不相同')
+            return render_template('register.html', form=form)
+        user = User.query.filter_by(username=usernmae).first()
+        if user:
+            flash('用户【%s】已存在'% usernmae)
+            return render_template('home/register.html', form=form)
+        new_user = User(username=usernmae)
+        new_user.set_password(pasword)
+        db.session.add(new_user)
+        db.session.commit()
+        flash('注册成功')
+        return redirect(url_for('index.login'))
 
 class ExecSingleView(MethodView):
     @login_required
