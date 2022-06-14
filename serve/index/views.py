@@ -109,7 +109,7 @@ class RegisterView(MethodView):
         user = User.query.filter_by(username=usernmae).first()
         if user:
             flash('用户【%s】已存在'% usernmae)
-            return render_template('home/register.html', form=form)
+            return render_template('register.html', form=form)
         new_user = User(username=usernmae)
         new_user.set_password(pasword)
         db.session.add(new_user)
@@ -121,7 +121,7 @@ class ExecSingleView(MethodView):
     @login_required
     def get(self):
         clean_temp_dir()
-        return render_template('single.html')
+        return render_template('single.html', my_apply=get_my_apply(session['username']))
 
     @login_required
     def post(self):

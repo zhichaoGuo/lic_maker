@@ -94,6 +94,7 @@ def zip_file(zip_name):
     try:
         with zipfile.ZipFile(zip_path, 'w', compression=zipfile.ZIP_LZMA) as f:
             for file in os.listdir(temp_dir):
+                p = subprocess.run(['sudo', 'chmod', '777', file], cwd=temp_dir, timeout=10)
                 f.write(os.path.join(temp_dir, file), file)
             f.close()
         return True

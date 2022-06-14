@@ -101,4 +101,7 @@ def record_apply_info(time, mac, user, ip):
 
 
 def get_my_apply(user):
-    return Record.query.filter_by(apply_user=user).order_by(desc(Record.apply_time))
+    if user == 'admin':
+        return Record.query.all()
+    else:
+        return Record.query.filter_by(apply_user=user).order_by(desc(Record.apply_time))
