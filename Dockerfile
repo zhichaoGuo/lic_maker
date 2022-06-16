@@ -4,7 +4,7 @@ USER root
 ADD --chown=root:root cfg/sources.list /etc/apt/sources.list
 
 RUN apt-get update \
-    && apt-get install -y nginx vim python3.8 python3-pip curl sudo git \
+    && apt-get install -y nginx vim python3.8 python3-pip curl sudo git lib32z1\
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && pip3 install --upgrade pip \
@@ -21,8 +21,7 @@ ENV LC_ALL=C.UTF-8
 ENV LANG=C.UTF-8
 
 WORKDIR /home/lic_maker
+ENV PATH=/home/lic_maker:$PATH
 ENV PYTHONPATH=/home/lic_maker:$PYTHONPATH
-
-COPY /init.sh /home/lic_maker/
 
 CMD ["/bin/bash", "/home/lic_maker/init.sh"]
