@@ -4,14 +4,11 @@ from logging.handlers import TimedRotatingFileHandler
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 
-from serve.index import index
 from flask import Flask
 from config import *
 
 app = Flask(__name__)
 
-app.register_blueprint(index)
-app.config["SECRET_KEY"] = '79537d00f4834892986f09a100aa1edf'
 
 server_log = TimedRotatingFileHandler('server.log', 'D')
 server_log.setLevel(logging.DEBUG)
