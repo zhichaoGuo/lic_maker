@@ -1,2 +1,2 @@
-from serve.index.views import index
-from serve.index import views,urls
+from serve.index.views import *
+from serve.index import views, urls

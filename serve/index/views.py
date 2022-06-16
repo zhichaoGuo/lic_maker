@@ -1,6 +1,5 @@
 import datetime
 import os
-
 from flask import Blueprint, render_template, jsonify, request, session, url_for, flash, send_file
 from flask.views import MethodView
 from flask_login import login_required, login_user, logout_user
@@ -11,7 +10,7 @@ from serve.DataBase import User, record_apply_mac, record_apply_info, get_my_app
 from serve.ExecLicMaker import exec_lic_maker_singel, zip_file, clean_temp_dir, exec_lic_maker_range
 from serve.MacTool import is_mac, gen_mac_list, mac_17_2_12
 from serve.form import LoginFrom, RegFrom
-from serve import loginManager, db, app
+from serve import loginManager, db
 
 index = Blueprint('index', __name__)
 
