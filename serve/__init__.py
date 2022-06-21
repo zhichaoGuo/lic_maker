@@ -3,7 +3,7 @@ import subprocess
 from logging.handlers import TimedRotatingFileHandler
 from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_simpleldap import LDAP
 from flask import Flask
 from config import *
 
@@ -35,6 +35,15 @@ loginManager = LoginManager(app)
 loginManager.session_protection = "strong"
 loginManager.login_view = 'index.login'
 loginManager.login_message = u'lic_maker平台必须登录，请登录您的平台账号！'
+
+
+app.config["LDAP_HOST"] = "192.168.0.164"
+app.config["LDAP_PORT"] = 389
+app.config["LDAP_USER_OBJECT_FILTER"] = "(&(objectclass=Person)(sAMAccountName=%s))"
+app.config["LDAP_BASE_DN"] = "ou=htek,dc=htek,dc=org"
+app.config["LDAP_USERNAME"] = "cn=ldapadmin,ou=htek,dc=htek,dc=org"
+app.config["LDAP_PASSWORD"] = "LDap123"
+ldap = LDAP(app)
 
 subprocess.run(['sudo','chmod','777','lic_maker'], cwd=root_dir, timeout=10)
 subprocess.run(['sudo','chmod','777','zpipe'], cwd=root_dir, timeout=10)

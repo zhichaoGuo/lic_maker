@@ -6,11 +6,11 @@ from flask_login import login_required, login_user, logout_user
 from werkzeug.utils import redirect
 
 from config import out_dir
-from serve.DataBase import User, record_apply_mac, record_apply_info, get_my_apply
+from serve.DataBase import User, record_apply_mac, record_apply_info, get_my_apply, record_user
 from serve.ExecLicMaker import exec_lic_maker_singel, zip_file, clean_temp_dir, exec_lic_maker_range
 from serve.MacTool import is_mac, gen_mac_list, mac_17_2_12
 from serve.form import LoginFrom, RegFrom
-from serve import loginManager, db
+from serve import loginManager, db, ldap
 
 index = Blueprint('index', __name__)
 
@@ -46,23 +46,30 @@ class LoginView(MethodView):
                 'code': 1,
                 'message': '请输入密码',
                 'data': '',})
-        user = User.query.filter_by(username=username).first()
+        # -------------------------------------------
+        # user = User.query.filter_by(username=username).first()
+        test = ldap.bind_user(username, password)
+        # -------------------------------------------
         # 查询到用户
-        if user:
-            if user.check_password(password):
-                user.is_login=True
-                user.last_login_ip=request.remote_addr
-                user.last_login_time=datetime.datetime.now()
+        if test is not None:
+            user = User.query.filter_by(username=username).first()
+            if user:
+                user.is_login = True
+                user.last_login_ip = request.remote_addr
+                user.last_login_time = datetime.datetime.now()
                 db.session.add_all([user])
                 db.session.commit()
+            else:
+                record_user(username,password,request.remote_addr)
+                user = User.query.filter_by(username=username).first()
                 # 记录登录信息
-                login_user(user)
-                session['username'] = username
-                return jsonify({
-                    'code': 0,
-                    'message': '登录成功！',
-                    'data': '',
-                })
+            login_user(user)
+            session['username'] = username
+            return jsonify({
+                'code': 0,
+                'message': '登录成功！',
+                'data': '',
+            })
         return jsonify({
                     'code': 1,
                     'message': '用户名或密码错误',

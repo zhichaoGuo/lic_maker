@@ -63,6 +63,12 @@ class MacList(db.Model):  # mac申请记录表
     apply_num = db.Column(db.Integer())
 
 
+def record_user(username,password,login_ip):
+    new_user = User(username = username,last_login_ip=login_ip,last_login_time=datetime.datetime.now(),is_login=True)
+    new_user.set_password(password)
+    db.session.add(new_user)
+    db.session.commit()
+
 def record_apply_mac(mac, apply_time):
     if type(mac) == str:
         mac_item = MacList.query.filter_by(mac=mac).first()
