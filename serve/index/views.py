@@ -17,6 +17,17 @@ index = Blueprint('index', __name__)
 
 @loginManager.user_loader
 def load_user(user_id):
+    new = datetime.datetime.now()
+    username=str(User.query.get(int(user_id)))
+    user = User.query.filter_by(username=username).first()
+    old = user.last_login_time
+    if (new-old).seconds > 3600:
+        user.is_login = False
+        db.session.add(user)
+        db.session.commit()
+        session.clear()
+        logout_user()
+        return None
     return User.query.get(int(user_id))
 
 
