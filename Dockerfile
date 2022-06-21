@@ -4,7 +4,7 @@ USER root
 ADD --chown=root:root cfg/sources.list /etc/apt/sources.list
 
 RUN apt-get update \
-    && apt-get install -y nginx vim python3.8 python3-pip curl sudo git lib32z1\
+    && apt-get install -y nginx vim python3.8 python3-pip curl sudo git lib32z1 python-dev libldap2-dev libsasl2-dev libssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && pip3 install --upgrade pip \

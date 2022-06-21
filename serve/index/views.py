@@ -18,16 +18,19 @@ index = Blueprint('index', __name__)
 @loginManager.user_loader
 def load_user(user_id):
     new = datetime.datetime.now()
-    username=str(User.query.get(int(user_id)))
+    username = str(User.query.get(int(user_id)))
     user = User.query.filter_by(username=username).first()
-    old = user.last_login_time
-    if (new-old).seconds > 3600:
-        user.is_login = False
-        db.session.add(user)
-        db.session.commit()
-        session.clear()
-        logout_user()
-        return None
+    if user:
+        old = user.last_login_time
+        # 登录超时 3600s -> 1h
+        if (new - old).seconds > 3600:
+            user.is_login = False
+            db.session.add(user)
+            db.session.commit()
+            session.clear()
+            logout_user()
+            return None
+        return User.query.get(int(user_id))
     return User.query.get(int(user_id))
 
 
@@ -51,12 +54,12 @@ class LoginView(MethodView):
             return jsonify({
                 'code': 1,
                 'message': '请输入用户名',
-                'data': '',})
+                'data': '', })
         if password is None:
             return jsonify({
                 'code': 1,
                 'message': '请输入密码',
-                'data': '',})
+                'data': '', })
         # -------------------------------------------
         # user = User.query.filter_by(username=username).first()
         test = ldap.bind_user(username, password)
@@ -71,7 +74,7 @@ class LoginView(MethodView):
                 db.session.add_all([user])
                 db.session.commit()
             else:
-                record_user(username,password,request.remote_addr)
+                record_user(username, password, request.remote_addr)
                 user = User.query.filter_by(username=username).first()
                 # 记录登录信息
             login_user(user)
@@ -82,10 +85,10 @@ class LoginView(MethodView):
                 'data': '',
             })
         return jsonify({
-                    'code': 1,
-                    'message': '用户名或密码错误',
-                    'data': '',
-                })
+            'code': 1,
+            'message': '用户名或密码错误',
+            'data': '',
+        })
 
 
 class IndexView(MethodView):
@@ -110,7 +113,8 @@ class LogoutView(MethodView):
 class RegisterView(MethodView):
     def get(self):
         form = RegFrom()
-        return render_template('register.html',form=form)
+        return render_template('register.html', form=form)
+
     def post(self):
         form = RegFrom()
         usernmae = request.form['username']
@@ -125,7 +129,7 @@ class RegisterView(MethodView):
             return render_template('register.html', form=form)
         user = User.query.filter_by(username=usernmae).first()
         if user:
-            flash('用户【%s】已存在'% usernmae)
+            flash('用户【%s】已存在' % usernmae)
             return render_template('register.html', form=form)
         new_user = User(username=usernmae)
         new_user.set_password(pasword)
@@ -133,6 +137,7 @@ class RegisterView(MethodView):
         db.session.commit()
         flash('注册成功')
         return redirect(url_for('index.login'))
+
 
 class ExecSingleView(MethodView):
     @login_required
@@ -159,11 +164,13 @@ class ExecSingleView(MethodView):
                     flash('mac:%s 生成licence失败' % mac)
                     clean_temp_dir()
                     return render_template('single.html', my_apply=get_my_apply(session['username']))
-            if zip_file('test'):
+            file_name = str(datetime.datetime.now()).split('.')[0].replace('-', '').replace(' ', '_').replace(':', '')[
+                        2:-2] + '_' + session['username'].split('.')[0]
+            if zip_file(file_name):
                 clean_temp_dir()
                 record_apply_info(apply_time, data_list, session['username'], request.remote_addr)
                 record_apply_mac(data_list, apply_time)
-                return send_file(os.path.join(out_dir, 'test.zip'))
+                return send_file(os.path.join(out_dir, '%s.zip'% file_name))
             else:
                 flash('压缩失败')
                 return render_template('single.html', my_apply=get_my_apply(session['username']))
@@ -196,12 +203,14 @@ class ExecRangeView(MethodView):
             clean_temp_dir()
             flash('生成失败')
             return render_template('range.html', my_apply=get_my_apply(session['username']))
-        if zip_file('test'):
+        file_name = str(datetime.datetime.now()).split('.')[0].replace('-', '').replace(' ', '_').replace(':', '')[
+                    2:-2] + '_' + session['username'].split('.')[0]
+        if zip_file(file_name):
             clean_temp_dir()
             mac_list = gen_mac_list(start_mac, stop_mac)
             record_apply_info(apply_time, mac_list, session['username'], request.remote_addr)
             record_apply_mac(mac_list, apply_time)
-            return send_file(os.path.join(out_dir, 'test.zip'))
+            return send_file(os.path.join(out_dir, '%s.zip'% file_name))
         else:
             flash('压缩失败')
             return render_template('range.html', my_apply=get_my_apply(session['username']))
