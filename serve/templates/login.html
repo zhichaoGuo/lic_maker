@@ -19,10 +19,16 @@
     <div class="vertical-align-wrap">
         <div class="vertical-align-middle">
             <div class="header " style="">
-                <h1 style="text-align: center;">平台登录</h1>
+                <h6 style="text-align: center;">_______________________________________________________________</h6>
+                <h1 style="text-align: center;"> </h1>
+                <h1 style="text-align: center;">Licence Maker</h1>
+                <h2 style="text-align: center;">登  录</h2>
+                <h6 style="text-align: center;">_______________________________________________________________</h6>
             </div>
+            <br><br><br>
             <div style="text-align: center;color: red" id="duanyan">
             </div>
+            <br>
             <div style="text-align: center;color: red">
                 {% with messages = get_flashed_messages() %}
                     {% if messages %}
@@ -44,6 +50,7 @@
                             {% endfor %}
                         {% endif %}
                         {{ form.username(class='form-control',id='username') }}
+                        <br>
                         <div class="form-group">
                             {{ form.password(class='form-control',id='password') }}
                         </div>
@@ -51,8 +58,11 @@
                     </div>
                 </form>
             </div>
-            <h3 style="text-align: center;color: red">licence maker页面测试 </h3>
-            <h3 style="text-align: center;color: red">请勿点击或登录</h3>
+<!--            <h3 style="text-align: center;color: red">licence maker页面测试 </h3>-->
+            <br>
+            <h5 style="text-align: center;color: grey">Tip:请使用jira/wiki账号登录</h5>
+            <br>
+            <br>
         </div>
     </div>
 </div>
