@@ -40,12 +40,14 @@ def load_user(user_id):
 class RootView(MethodView):
     @login_required
     def get(self):
+        # / 跳转 /index
         app.logger.debug('from root view to index view')
         return redirect(url_for('index.index'))
 
 
 class LoginView(MethodView):
     def get(self):
+        # 已登录跳转到index
         if session.get('username') is not None:
             app.logger.debug('from login view to index view')
             return redirect(url_for('index.index'))
@@ -93,6 +95,7 @@ class LoginView(MethodView):
         # 查询到用户
         if test is not None:
             app.logger.info('user:%s is login! from addr:%s' % (username,request.remote_addr))
+            # 查询user表中是否有该用户
             user = User.query.filter_by(username=username).first()
             if user:
                 user.is_login = True
@@ -101,10 +104,11 @@ class LoginView(MethodView):
                 db.session.add_all([user])
                 db.session.commit()
             else:
+                # 不在用户表中，添加进用户表
                 app.logger.debug('new user:%s wire into DB!' % username)
                 record_user(username, password, request.remote_addr)
                 user = User.query.filter_by(username=username).first()
-                # 记录登录信息
+            # 记录登录信息
             login_user(user)
             app.logger.info('user:%s is login success!' % username)
             session['username'] = username
@@ -113,6 +117,7 @@ class LoginView(MethodView):
                 'message': '登录成功！',
                 'data': '',
             })
+        # 未通过ldap验证
         app.logger.info('user:%s is login failed!' % username)
         return jsonify({
             'code': 1,
@@ -142,6 +147,7 @@ class LogoutView(MethodView):
         return redirect(url_for('index.login', next=request.url))
 
 
+# 注册功能暂时废弃，如果需要注册功能需要修改登录验证部分
 class RegisterView(MethodView):
     def get(self):
         form = RegFrom()
@@ -183,11 +189,10 @@ class ExecSingleView(MethodView):
 
     @login_required
     def post(self):
-        # print(request.remote_addr)
-        # 接收数据处理：由byte转str去除b''，去除空格，去除文本域name，以换行符分割mac存为列表
+        # 接收数据处理：去除空格 \r，以\n分割mac存为列表,去除列表中的空元素
         data = request.form['mac_list'].replace(' ', '').replace('\r', '').split('\n')
         data_list = [x for x in data if x != '']
-        app.logger.error('try ro exec single with mac:%s' % data_list)
+        app.logger.info('try to exec single with mac:%s' % data_list)
         if (data_list == []) | (data_list is None):
             flash('请输入至少一个mac地址')
             app.logger.error('exec single without any mac!')
@@ -229,8 +234,6 @@ class ExecRangeView(MethodView):
     def post(self):
         start_mac = request.form['start_mac']
         stop_mac = request.form['stop_mac']
-        print(start_mac)
-        print(stop_mac)
         app.logger.info('try to exec range with mac:%s to %s'%(start_mac,stop_mac))
         if (start_mac == '') | (stop_mac == ''):
             app.logger.error('exec range without start or stop mac!')

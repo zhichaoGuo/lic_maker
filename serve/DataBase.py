@@ -59,7 +59,7 @@ class Record(db.Model):  # 申请记录表
     apply_ip = db.Column(db.String(252))
 
 
-class MacList(db.Model):  # mac申请记录表
+class MacList(db.Model):  # mac记录表
     __tablename__ = 'mac_list'
     id = db.Column(db.Integer(), primary_key=True, autoincrement=True)
     mac = db.Column(db.String(252), unique=True)
